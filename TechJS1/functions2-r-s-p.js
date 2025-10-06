@@ -6,7 +6,8 @@ let score = JSON.parse(localStorage.getItem('score')) || {
 
 updateScoreElement();
 
-
+let isAutoPlaying = false;
+let intervalId;
 
 document.querySelector('.js-rock-button')
   .addEventListener('click', () => {
@@ -23,6 +24,12 @@ document.querySelector('.js-scissors-button')
     playGame('scissors');
   });
 
+// ✅ ajout du bouton autoplay
+document.querySelector('.js-auto')
+  .addEventListener('click', () => {
+    toggleAutoPlay();
+  });
+
 document.body.addEventListener('keydown', (event) => {
   if (event.key === 'r') {
     playGame('rock');
@@ -30,65 +37,40 @@ document.body.addEventListener('keydown', (event) => {
     playGame('paper');
   } else if (event.key === 's') {
     playGame('scissors');
+  } else if (event.key === 'a') {
+    toggleAutoPlay();
   }
 });
-
-
-
-  /*
-  Add an event listener
-  if the user presses the key r => play rock
-  if the user presses the key p => play paper
-  if the user presses the key s => play scissors
-  */
-
-
 
 function playGame(playerMove) {
   const computerMove = pickComputerMove();
 
   let result = '';
-  if(playerMove===computerMove){
-    result='Tie';
+  if (playerMove === computerMove) {
+    result = 'Tie';
     score.ties++;
-  }else if(playerMove==='rock' && computerMove==='paper'){
-    result='Lose';
-    score.losses++;
-  }else if(playerMove==='rock' && computerMove==='scissors'){
-    result='Win';
+  } else if (
+    (playerMove === 'rock' && computerMove === 'scissors') ||
+    (playerMove === 'paper' && computerMove === 'rock') ||
+    (playerMove === 'scissors' && computerMove === 'paper')
+  ) {
+    result = 'Win';
     score.wins++;
-  }else if(playerMove==='paper' && computerMove==='rock'){
-    result='Win';
-    score.wins++;
-  }else if(playerMove==='paper' && computerMove==='scissors'){
-    result='Lose';
+  } else {
+    result = 'Lose';
     score.losses++;
-  }else if(playerMove==='scissors' && computerMove==='rock'){
-    result='Lose';
-    score.losses++;
-  }else{
-    result='Win';
-    score.wins++;
   }
-  updateScoreElement()
-  localStorage.setItem('score',JSON.stringify(score))
+
+  updateScoreElement();
+  localStorage.setItem('score', JSON.stringify(score));
+
   document.querySelector('.js-result')
     .innerHTML = `You: ${result}`;
 
-
-
-  
-
-  document.querySelector('.js-moves').innerHTML=`
-  You: <img src="images/${playerMove}-emoji.png" class="move-icon">, 
-  Computer: <img src="images/${computerMove}-emoji.png" class="move-icon">
+  document.querySelector('.js-moves').innerHTML = `
+    You: <img src="images/${playerMove}-emoji.png" class="move-icon">, 
+    Computer: <img src="images/${computerMove}-emoji.png" class="move-icon">
   `;
-  
-
-  // calculate result
-  // update the score and store it using localStorage.setItem
-  // show the new score and the updated images using "document.querySelector"
-
 }
 
 function updateScoreElement() {
@@ -99,15 +81,30 @@ function updateScoreElement() {
 function pickComputerMove() {
   const randomNumber = Math.random();
 
-  let computerMove = '';
-
-  if (randomNumber >= 0 && randomNumber < 1 / 3) {
-    computerMove = 'rock';
-  } else if (randomNumber >= 1 / 3 && randomNumber < 2 / 3) {
-    computerMove = 'paper';
-  } else if (randomNumber >= 2 / 3 && randomNumber < 1) {
-    computerMove = 'scissors';
+  if (randomNumber < 1 / 3) {
+    return 'rock';
+  } else if (randomNumber < 2 / 3) {
+    return 'paper';
+  } else {
+    return 'scissors';
   }
+}
 
-  return computerMove;
+function toggleAutoPlay() {
+  const button = document.querySelector('.js-auto');
+
+  if (!isAutoPlaying) {
+    button.innerText = 'Stop Auto Play';
+    isAutoPlaying = true;
+
+    intervalId = setInterval(() => {
+      const playerMove = pickComputerMove();
+      playGame(playerMove);
+    }, 1000);
+
+  } else {
+    button.innerText = 'Auto Play';
+    isAutoPlaying = false;
+    clearInterval(intervalId);
+  }
 }
