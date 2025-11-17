@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Book Reading Tracker</title>
+</head>
+<body class="bg-gray-100 p-6">
+
+  <h1 class="text-3xl font-bold mb-4">Book Reading Tracker</h1>
+
+  <!-- FORM -->
+  <form id="bookForm" class="bg-white p-4 rounded shadow w-1/2">
+    <input type="text" id="title" placeholder="Title" class="block w-full p-2 border mb-2" required>
+    <input type="text" id="author" placeholder="Author" class="block w-full p-2 border mb-2" required>
+    <input type="number" id="pages" placeholder="Pages" class="block w-full p-2 border mb-2" required>
+    <input type="number" id="pagesRead" placeholder="Pages Read" class="block w-full p-2 border mb-2" required>
+    
+    <select id="status" class="block w-full p-2 border mb-2">
+      <option>Read</option>
+      <option>Re-read</option>
+      <option>DNF</option>
+      <option>Currently reading</option>
+      <option>Returned Unread</option>
+      <option>Want to read</option>
+    </select>
+
+    <select id="format" class="block w-full p-2 border mb-2">
+      <option>Print</option>
+      <option>PDF</option>
+      <option>Ebook</option>
+      <option>AudioBook</option>
+    </select>
+
+    <input type="text" id="suggestedBy" placeholder="Suggested by" class="block w-full p-2 border mb-2">
+
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Add Book</button>
+  </form>
+
+  <!-- BOOK LIST -->
+  <div id="booksList" class="mt-6"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
